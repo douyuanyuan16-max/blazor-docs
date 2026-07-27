@@ -1,0 +1,23 @@
+name: 文档图片变更日志记录
+# 仅main分支推送图片/文档时触发
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.png'
+      - '**.md'
+      - '**.jpg'
+jobs:
+  log_image_change:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取仓库代码
+        uses: actions/checkout@v4
+      - name: 打印本次提交所有修改文件
+        run: |
+          echo "本次提交变更文件列表："
+          git diff --name-only HEAD^ HEAD
+          # 检测目标图片是否改动并输出标记日志
+          if git diff --name-only HEAD^ HEAD | grep "blazor-chart-point-selection.png"; then
+            echo "【重点】本次提交修改了 blazor-chart-point-selection.png"
+          fi
